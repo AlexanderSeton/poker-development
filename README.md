@@ -1,7 +1,7 @@
 # Mobile Poker Game
 
 ## Description
-- Mobile poker application using React Native, Java, JavaScript, Spring, Websocket
+- Mobile poker application using React Native, Java, JavaScript, Spring and Websocket
 
 ## MVP
 - Create a JavaScript front-end, Java back-end app to enable players to create a poker room and play
