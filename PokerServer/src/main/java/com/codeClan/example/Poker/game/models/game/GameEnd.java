@@ -77,17 +77,16 @@ public class GameEnd {
     public void onComplete(GameTable gameTable) {
 
         ArrayList<Player> remainingPlayers = this.calculateRemainingPlayers((ArrayList<Player>) gameTable.getPlayers());
-
         if(remainingPlayers.size() == 1){
 
             remainingPlayers.get(0).addToStack(gameTable.getPot());
+        } else {
+            ArrayList<PlayerHand> winners = calculateWinners((ArrayList<Player>) gameTable.getPlayers(), (ArrayList<Card>) gameTable.getBoard());
+
+            double potShare = calculatePotShare(gameTable.getPot(), winners);
+
+            this.payWinners(potShare, winners, (ArrayList<Player>) gameTable.getPlayers());
         }
-
-        ArrayList<PlayerHand> winners = calculateWinners((ArrayList<Player>) gameTable.getPlayers(), (ArrayList<Card>) gameTable.getBoard());
-
-        double potShare = calculatePotShare(gameTable.getPot(), winners);
-
-        this.payWinners(potShare, winners, (ArrayList<Player>) gameTable.getPlayers());
 
     }
 }

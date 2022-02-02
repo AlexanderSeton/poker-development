@@ -74,6 +74,8 @@ public class PokerApplicationTests {
 		 players.add(player2);
 		 Deck deck = new Deck();
 		 gameTable1 = new GameTable( 2000.0, players, 50.0, deck);
+		 gameTable1.addCardToBoard(card1);
+		 gameTable1.addCardToBoard(card2);
 	}
 	@Test
 	public void contextLoads() {
