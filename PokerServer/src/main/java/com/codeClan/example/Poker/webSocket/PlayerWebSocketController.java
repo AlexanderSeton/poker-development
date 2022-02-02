@@ -113,6 +113,7 @@ public class PlayerWebSocketController {
             }
             gameTableRepository.save(table);
         }
+        // output to front-end
         HashMap<Long, List<String>> holeCards = new HashMap<>();
         List<Player> gameTablesPlayers = gameTableRepository.findGameTableByGameKey(gameKey).get().getPlayers();
         for (Player player : gameTablesPlayers) {
@@ -124,12 +125,79 @@ public class PlayerWebSocketController {
             holeCards.put(player.getId(), handData);
         }
 
-        // assign the small and big blind & take blinds
-//        GameTable gameTable = gameTableRepository.findGameTableByGameKey()
-
         System.out.println(holeCards);
         return new ResponseEntity<>(holeCards, HttpStatus.OK);
     }
+
+
+    @MessageMapping("/action/blinds/{gameKey}")
+    @SendTo("/client/greetings")
+    public ResponseEntity<GameTable> handleBlinds(@DestinationVariable String gameKey) {
+
+        System.out.println("IN THE BLINDS ROUTE!!!!\n BLINDS ROUTE");
+
+        // assign the small and big blind & take blinds
+        GameTable gameTable = gameTableRepository.findGameTableByGameKey(gameKey).get();
+        Boolean blindsAllocated = false;
+        for (Player player : gameTable.getPlayers()) {
+            if (player.isBigBlind() || player.isSmallBlind()) {
+                blindsAllocated = true;
+            }
+        }
+        // if blinds are already allocated shift along a player
+        if (blindsAllocated) {
+            for (Player player : gameTable.getPlayers()) {
+                if (player.isBigBlind()) {
+                    int index = gameTable.getPlayers().indexOf(player);
+                    player.setBigBlind(false);
+                    player.setSmallBlind(true);
+                    int newIndex = index + 1;
+                    if (newIndex > gameTable.getPlayers().size() - 1) {
+                        newIndex = 0;
+                    }
+                    Player newBigBlind = gameTable.getPlayers().get(newIndex);
+                    newBigBlind.setBigBlind(true);
+                    playerRepository.save(player);
+                    playerRepository.save(newBigBlind);
+                    break;
+                }
+            }
+        }
+        // if no blinds have been allocated yet set them
+        else {
+            gameTable.getPlayers().get(0).setSmallBlind(true);
+            playerRepository.save(gameTable.getPlayers().get(0));
+            gameTable.getPlayers().get(1).setBigBlind(true);
+            playerRepository.save(gameTable.getPlayers().get(1));
+        }
+        // make blind players pay the blinds
+        for (Player player : gameTable.getPlayers()) {
+            if (player.isSmallBlind()) {
+                double betSize = gameTable.getSmallBlind();
+                player.bet(betSize);
+                playerRepository.save(player);
+                gameTableRepository.save(gameTable);
+                gameTable.addToPot(player.getContribution());
+                gameTableRepository.save(gameTable);
+                playerRepository.save(player);
+            }
+            else if (player.isBigBlind()) {
+                double betSize = gameTable.getBigBlind();
+                player.bet(betSize);
+                playerRepository.save(player);
+                gameTableRepository.save(gameTable);
+                gameTable.addToPot(player.getContribution());
+                gameTableRepository.save(gameTable);
+                playerRepository.save(player);
+            }
+        }
+
+        // handle setting active player
+
+//        gameTableRepository.save(gameTable);
+        return new ResponseEntity<>(gameTable, HttpStatus.OK);
+    }
+
 
     @MessageMapping("/action/game/{id}")
     @SendTo("/client/greetings")

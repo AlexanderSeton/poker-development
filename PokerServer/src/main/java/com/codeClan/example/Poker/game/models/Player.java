@@ -71,7 +71,7 @@ public class Player {
         this.isBigBlind = false;
         this.isSmallBlind = false;
         this.isActive = false;
-        this.contribution = 0;
+        this.contribution = 0.0;
         this.folded = false;
         this.game_table = null;
         this.bigBlindValue = 0;
@@ -202,8 +202,7 @@ public class Player {
     }
 
     public void increaseContribution(double amount){
-        double contributionAmount = this.contribution + amount;
-        setContribution(contributionAmount);
+        this.contribution += amount;
     }
 
     public double getContribution() {

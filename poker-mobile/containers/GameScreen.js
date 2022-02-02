@@ -249,6 +249,12 @@ const GameScreen = (props) => {
             "playerId": props.route.params.userId,
             "gameId": props.route.params.gameId
         }));
+        handleBlindsTaken();
+    }
+
+    function handleBlindsTaken() {
+        stompClient.send(`/server/action/blinds/${props.route.params.gameKey}`, {}, JSON.stringify({
+        }));
     }
 
     const playerItems = players.map((player, index) => {
@@ -281,7 +287,7 @@ const GameScreen = (props) => {
 
                     <View style={styles.board}>
 
-                        {!dealt? 
+                        {!dealt && players.length > 1? 
                             <View style={styles.dealButtonView}>
                                 <Button 
                                     title="Deal"
