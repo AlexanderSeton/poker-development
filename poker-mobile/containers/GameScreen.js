@@ -73,6 +73,9 @@ const GameScreen = (props) => {
                 // check successfully joined
                 if (data["statusCode"] == "OK") {
                     console.log("success") // test
+                    console.log(data["body"]["pot"]);
+                    let newPot = await data["body"]["pot"];
+                    setPot(newPot);
                     let players = await data["body"]["players"];
                     setPlayers(players);
                     let board = await data["body"]["board"];
@@ -83,9 +86,9 @@ const GameScreen = (props) => {
                             setUser(user);
                         }
                     }
-                    let pot = await data["pot"];
-                    setPot(pot);
-                    let smallBlind = await data["smallBlind"];
+                    // let pot = await data["pot"];
+                    // setPot(pot);
+                    let smallBlind = await data["body"]["smallBlind"];
                     setSmallBlind(smallBlind);
                     let bigBlind = await smallBlind * 2;
                     setBigBlind(bigBlind);
@@ -114,11 +117,15 @@ const GameScreen = (props) => {
                 console.log("client/join:"); // test
                 console.log(JSON.parse(response["body"])); // test
                 let data = await JSON.parse(response["body"]);
-                console.log("DATA: " + data);
+                // console.log("DATA: " + data["body"]["pot"]);
                 // check successfully joined
                 if (data["statusCode"] == "OK") {
                     console.log("success") // test
-                    console.log(data);
+                    console.log(data["body"]["pot"]);
+                    let newPot = await data["body"]["pot"];
+                    setPot(newPot);
+                    // console.log(pot);
+                    console.log("IN JSON PARSING");
                     let players = await data["body"]["players"];
                     setPlayers(players);
                     let board = await data["body"]["board"];
@@ -129,9 +136,7 @@ const GameScreen = (props) => {
                             setUser(user);
                         }
                     }
-                    let pot = await data["pot"];
-                    setPot(pot);
-                    let smallBlind = await data["smallBlind"];
+                    let smallBlind = await data["body"]["smallBlind"];
                     setSmallBlind(smallBlind);
                     let bigBlind = await smallBlind * 2;
                     setBigBlind(bigBlind);
@@ -161,6 +166,7 @@ const GameScreen = (props) => {
                 let data = await JSON.parse(response["body"]);
                 // check response successful
                 if (data["statusCodeValue"] == 200) {
+                    setDealt(true);
                     console.log("success");
                     let playersHands = await data["body"];
                     for (const [key, value] of Object.entries(playersHands)) {
@@ -287,11 +293,16 @@ const GameScreen = (props) => {
                             </View>
                             : null }
                         
-
                     </View> 
                     
-                    <View style={styles.playerView}>
-
+                    <View style={styles.gameDataView}>
+                        {pot != undefined ? <Text style={styles.potText}>Pot: £{pot}</Text> : null}
+                        {smallBlind != 0 ?
+                        <View style={styles.gameData}>
+                            <Text style={styles.smallTextGameData}>Small Blind: £{smallBlind}</Text>
+                            <Text style={styles.smallTextGameData}>Big Blind: £{bigBlind}</Text>
+                        </View>
+                        : null}
                     </View>
 
                 </View>
@@ -305,7 +316,7 @@ const GameScreen = (props) => {
                             </View>
                         </View>
                         <View style={styles.userData}>
-                            <Text style={styles.text}>Stats</Text>
+                            <Text style={styles.text}>Your Stats</Text>
                             
                             {user != undefined ?
                             // <View style={styles.userData}>
@@ -375,6 +386,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderColor: "blue",
         justifyContent: "center",
+        backgroundColor: "lightblue",
     },
     dealButtonView: {
         height: "30%",
@@ -387,7 +399,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderColor: "blue",
         justifyContent: "center",
-        backgroundColor: "lightgreen",
+        backgroundColor: "lightblue",
     },
     holeCards: {
         display: "flex",
@@ -400,6 +412,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 10,
         padding: 10,
+        backgroundColor: "lightblue",
     },
     top: {
         borderWidth: 1,
@@ -414,7 +427,18 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontSize: 20,
     },
+    potText: {
+        textAlign: "center",
+        marginLeft: "auto",
+        marginRight: "auto",
+        fontSize: 30,
+        padding: "1%",
+    },
     smallText: {
+        textAlign: "center",
+        fontSize: 15,
+    },
+    smallTextGameData: {
         textAlign: "center",
         fontSize: 15,
     },
@@ -448,12 +472,21 @@ const styles = StyleSheet.create({
         // backgroundColor: "green",
     },
     playerView: {
-        height: "30%",
+        height: "35%",
         // backgroundColor: "green",
         flexDirection: "row",
         justifyContent: "space-between",
         borderWidth: 1,
     },
+    gameDataView: {
+        height: "25%",
+        borderWidth: 1,
+
+    },
+    gameData: {
+        // display: "flex",
+        // flexDirection: "row", 
+    }
 });
 
 export default GameScreen;
