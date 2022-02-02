@@ -123,7 +123,10 @@ public class PlayerWebSocketController {
             }
             holeCards.put(player.getId(), handData);
         }
-//        holeCards.put(2L, new ArrayList<>(Arrays.asList("SPADES", "TWO", "DIAMONDS", "TWO")));
+
+        // assign the small and big blind & take blinds
+//        GameTable gameTable = gameTableRepository.findGameTableByGameKey()
+
         System.out.println(holeCards);
         return new ResponseEntity<>(holeCards, HttpStatus.OK);
     }

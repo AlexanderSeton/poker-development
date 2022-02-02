@@ -34,16 +34,16 @@ public class Player {
     @JsonIgnoreProperties({"player"})
     private List<Card> hand;
 
-    @Transient
+    @Column(name = "big_blind")
     private boolean isBigBlind;
 
-    @Transient
+    @Column(name = "small_blind")
     private boolean isSmallBlind;
 
-    @Transient
+    @Column(name = "active")
     private boolean isActive;
 
-    @Transient
+    @Column(name = "contribution")
     private double contribution;
 
     @Transient

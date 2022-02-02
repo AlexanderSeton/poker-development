@@ -7,11 +7,14 @@ const UserData = function(props) {
 
     return(
         <View style={styles.userDataView}>
+            <Text style={styles.stackText}>
+                Stack: £{props.user.stack}
+            </Text>
             <Text style={styles.text}>
                 Name: {props.user.name}
             </Text>
             <Text style={styles.text}>
-                Stack: £{props.user.stack}
+                Username: {props.user.username}
             </Text>
             {props.user.bigBlind?
             // <Text>You are big Blind</Text>
@@ -20,7 +23,7 @@ const UserData = function(props) {
                 style={styles.image}
             />
             : null}
-            {!props.user.smallBlind?
+            {props.user.smallBlind?
             // <Text>You are small Blind</Text>
             <Image
                 source={require("../assets/smallBlind.png")}
@@ -37,12 +40,17 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginLeft: "auto",
         marginRight: "auto",
-        paddingTop: "15%",
+        paddingTop: "5%",
     },
     text: {
         textAlign: "center",
         fontSize: 15,
-        padding: "3%",
+        paddingTop: "3%",
+    },
+    stackText: {
+        textAlign: "center",
+        fontSize: 20,
+        paddingTop: "3%",
     },
     image: {
         resizeMode: "contain",
